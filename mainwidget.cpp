@@ -47,6 +47,28 @@ MainWidget::MainWidget(QWidget *parent)
     penStyleComboBox->addItem("CustomDashLine",static_cast<int>(Qt::CustomDashLine));
     connect(penStyleComboBox,SIGNAL(activated(int)),this,SLOT(ShowPenStyle(int)));
 
+    //设置画笔顶帽
+    penCapLabel = new QLabel("画笔顶帽:");
+    penCapComboBox = new QComboBox;
+    penCapComboBox->addItem("SurareCap",Qt::SquareCap);
+    penCapComboBox->addItem("FlatCap",Qt::FlatCap);
+    penCapComboBox->addItem("RoundCap",Qt::RoundCap);
+    connect(penCapComboBox,SIGNAL(activated(int)),this,SLOT(ShowPenCap(int)));
+
+    //设置画笔连接点
+    penJoinLabel = new QLabel("画笔连接点");
+    penJoinComboBox = new QComboBox;
+    penJoinComboBox->addItem("BevelJoin",Qt::BevelJoin);
+    penJoinComboBox->addItem("MiterJoin",Qt::MiterJoin);
+    penJoinComboBox->addItem("RoundJoin",Qt::RoundJoin);
+    connect(penJoinComboBox,SIGNAL(activated(int)),this,SLOT(ShowPenJoin(int)));
+
+    //设置填充模式
+    fillRuleLabel = new QLabel("填充模式");
+    fillRuleComboBox = new QComboBox;
+    fillRuleComboBox->addItem("odd Even",Qt::OddEvenFill);
+    fillRuleComboBox->addItem("Winding",Qt::WindingFill);
+    connect(fillRuleComboBox,SIGNAL(activated(int)),this,SLOT(ShowFillRule()));
     //右边控制区域
     rightLayout = new QGridLayout;
     rightLayout->addWidget(shapeLabel,0,0);
@@ -58,6 +80,12 @@ MainWidget::MainWidget(QWidget *parent)
     rightLayout->addWidget(penWidthSpinBox,2,1);
     rightLayout->addWidget(penStyleLabel,3,0);
     rightLayout->addWidget(penStyleComboBox,3,1);
+    rightLayout->addWidget(penCapLabel,4,0);
+    rightLayout->addWidget(penCapComboBox,4,1);
+    rightLayout->addWidget(penJoinLabel,5,0);
+    rightLayout->addWidget(penJoinComboBox,5,1);
+    rightLayout->addWidget(fillRuleLabel,6,0);
+    rightLayout->addWidget(fillRuleComboBox,6,1);
     QHBoxLayout* mainLayout = new QHBoxLayout(this);
     mainLayout->addWidget(paintArea);
     mainLayout->addLayout(rightLayout);
@@ -80,9 +108,9 @@ void MainWidget::ShowPenWidth(int value)
 {
     QColor color = penColorFrame->palette().color(QPalette::Window);
     Qt::PenStyle style = Qt::PenStyle(penStyleComboBox->itemData(penStyleComboBox->currentIndex(),Qt::UserRole).toInt());
-//    Qt::PenCapStyle cap = Qt::PenCapStyle(penCapComboBox->itemData(penCapComboBox->currentIndex(),Qt::UserRole).toInt());
-//    Qt::PenJoinStyle join=Qt::PenJoinStyle(penJoinComboBox->itemData(penJoinComboBox->currentIndex(),Qt::UserRole).toInt());
-    paintArea->setPen(QPen(color,value,style));
+    Qt::PenCapStyle cap = Qt::PenCapStyle(penCapComboBox->itemData(penCapComboBox->currentIndex(),Qt::UserRole).toInt());
+    Qt::PenJoinStyle join=Qt::PenJoinStyle(penJoinComboBox->itemData(penJoinComboBox->currentIndex(),Qt::UserRole).toInt());
+    paintArea->setPen(QPen(color,value,style,cap,join));
 
 }
 
@@ -92,9 +120,9 @@ void MainWidget::ShowPenColor()
     penColorFrame->setPalette(QPalette(color));
     int value = penWidthSpinBox->value();
     Qt::PenStyle style = Qt::PenStyle(penStyleComboBox->itemData(penStyleComboBox->currentIndex(),Qt::UserRole).toInt());
-    //Qt::PenCapStyle cap = Qt::PenCapStyle(penCapComboBox->itemData(penCapComboBox->currentIndex(),Qt::UserRole).toInt());
-    //Qt::PenJoinStyle join=Qt::PenJoinStyle(penJoinComboBox->itemData(penJoinComboBox->currentIndex(),Qt::UserRole).toInt());
-    paintArea->setPen(QPen(color,value,style));
+    Qt::PenCapStyle cap = Qt::PenCapStyle(penCapComboBox->itemData(penCapComboBox->currentIndex(),Qt::UserRole).toInt());
+    Qt::PenJoinStyle join=Qt::PenJoinStyle(penJoinComboBox->itemData(penJoinComboBox->currentIndex(),Qt::UserRole).toInt());
+    paintArea->setPen(QPen(color,value,style,cap,join));
 }
 
 void MainWidget::ShowPenStyle(int styleValue)
@@ -102,18 +130,29 @@ void MainWidget::ShowPenStyle(int styleValue)
     QColor color = penColorFrame->palette().color(QPalette::Window);
     int value = penWidthSpinBox->value();
     Qt::PenStyle style = Qt::PenStyle(penStyleComboBox->itemData(styleValue,Qt::UserRole).toInt());
-    //Qt::PenCapStyle cap = Qt::PenCapStyle(penCapComboBox->itemData(penCapComboBox->currentIndex(),Qt::UserRole).toInt());
-    //Qt::PenJoinStyle join=Qt::PenJoinStyle(penJoinComboBox->itemData(penJoinComboBox->currentIndex(),Qt::UserRole).toInt());
-    paintArea->setPen(QPen(color,value,style));
+    Qt::PenCapStyle cap = Qt::PenCapStyle(penCapComboBox->itemData(penCapComboBox->currentIndex(),Qt::UserRole).toInt());
+    Qt::PenJoinStyle join=Qt::PenJoinStyle(penJoinComboBox->itemData(penJoinComboBox->currentIndex(),Qt::UserRole).toInt());
+    paintArea->setPen(QPen(color,value,style,cap,join));
 }
 
-void MainWidget::ShowPenCap(int)
+void MainWidget::ShowPenCap(int capValue)
 {
-
+    QColor color = penColorFrame->palette().color(QPalette::Window);//color(参数含义？)
+    int value = penWidthSpinBox->value();
+    Qt::PenStyle style = Qt::PenStyle(penStyleComboBox->itemData(penStyleComboBox->currentIndex(),Qt::UserRole).toInt());
+    Qt::PenCapStyle cap = Qt::PenCapStyle(penCapComboBox->itemData(capValue,Qt::UserRole).toInt());
+    Qt::PenJoinStyle join=Qt::PenJoinStyle(penJoinComboBox->itemData(penJoinComboBox->currentIndex(),Qt::UserRole).toInt());
+    paintArea->setPen(QPen(color,value,style,cap,join));
 }
 
-void MainWidget::ShowPenJoin(int)
+void MainWidget::ShowPenJoin(int joinValue)
 {
+    QColor color = penColorFrame->palette().color(QPalette::Window);
+    int value = penWidthSpinBox->value();
+    Qt::PenStyle style = Qt::PenStyle(penStyleComboBox->itemData(penStyleComboBox->currentIndex(),Qt::UserRole).toInt());
+    Qt::PenCapStyle cap = Qt::PenCapStyle(penCapComboBox->itemData(penCapComboBox->currentIndex(),Qt::UserRole).toInt());
+    Qt::PenJoinStyle join=Qt::PenJoinStyle(penJoinComboBox->itemData(joinValue,Qt::UserRole).toInt());
+    paintArea->setPen(QPen(color,value,style,cap,join));
 
 }
 
@@ -124,7 +163,8 @@ void MainWidget::ShowSpreadStyle()
 
 void MainWidget::ShowFillRule()
 {
-
+    Qt::FillRule rule = Qt::FillRule(fillRuleComboBox->itemData(fillRuleComboBox->currentIndex(),Qt::UserRole).toInt());
+    paintArea->SetFillRule(rule);
 }
 
 void MainWidget::ShowBrushColor()
