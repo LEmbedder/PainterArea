@@ -39,36 +39,76 @@ MainWidget::MainWidget(QWidget *parent)
     //设置画笔风格
     penStyleLabel = new QLabel("画笔风格");
     penStyleComboBox = new QComboBox;
-    penStyleComboBox->addItem("SoledLine",static_cast<int>(Qt::SolidLine));
-    penStyleComboBox->addItem("DashLine",static_cast<int>(Qt::DashLine));
-    penStyleComboBox->addItem("DotLine",static_cast<int>(Qt::DotLine));
-    penStyleComboBox->addItem("DashDotLine",static_cast<int>(Qt::DashDotLine));
-    penStyleComboBox->addItem("DashDotDotLine",static_cast<int>(Qt::DashDotDotLine));
-    penStyleComboBox->addItem("CustomDashLine",static_cast<int>(Qt::CustomDashLine));
+    penStyleComboBox->addItem("实线",static_cast<int>(Qt::SolidLine));
+    penStyleComboBox->addItem("虚线",static_cast<int>(Qt::DashLine));
+    penStyleComboBox->addItem("点线",static_cast<int>(Qt::DotLine));
+    penStyleComboBox->addItem("虚点线",static_cast<int>(Qt::DashDotLine));
+    penStyleComboBox->addItem("虚点点线",static_cast<int>(Qt::DashDotDotLine));
+    penStyleComboBox->addItem("定制虚线",static_cast<int>(Qt::CustomDashLine));
     connect(penStyleComboBox,SIGNAL(activated(int)),this,SLOT(ShowPenStyle(int)));
 
-    //设置画笔顶帽
+    //设置画笔顶帽,在线段时观看
     penCapLabel = new QLabel("画笔顶帽:");
     penCapComboBox = new QComboBox;
-    penCapComboBox->addItem("SurareCap",Qt::SquareCap);
-    penCapComboBox->addItem("FlatCap",Qt::FlatCap);
-    penCapComboBox->addItem("RoundCap",Qt::RoundCap);
+    penCapComboBox->addItem("方形笔帽",Qt::SquareCap);
+    penCapComboBox->addItem("扁平笔帽",Qt::FlatCap);
+    penCapComboBox->addItem("圆弧笔帽",Qt::RoundCap);
     connect(penCapComboBox,SIGNAL(activated(int)),this,SLOT(ShowPenCap(int)));
 
     //设置画笔连接点
     penJoinLabel = new QLabel("画笔连接点");
     penJoinComboBox = new QComboBox;
-    penJoinComboBox->addItem("BevelJoin",Qt::BevelJoin);
-    penJoinComboBox->addItem("MiterJoin",Qt::MiterJoin);
-    penJoinComboBox->addItem("RoundJoin",Qt::RoundJoin);
+    penJoinComboBox->addItem("斜角衔接",Qt::BevelJoin);
+    penJoinComboBox->addItem("斜切衔接",Qt::MiterJoin);
+    penJoinComboBox->addItem("圆弧衔接",Qt::RoundJoin);
     connect(penJoinComboBox,SIGNAL(activated(int)),this,SLOT(ShowPenJoin(int)));
 
-    //设置填充模式
+    //设置填充模式，使用在painterPath
     fillRuleLabel = new QLabel("填充模式");
     fillRuleComboBox = new QComboBox;
-    fillRuleComboBox->addItem("odd Even",Qt::OddEvenFill);
-    fillRuleComboBox->addItem("Winding",Qt::WindingFill);
+    fillRuleComboBox->addItem("奇数填充",Qt::OddEvenFill);
+    fillRuleComboBox->addItem("回路填充",Qt::WindingFill);
     connect(fillRuleComboBox,SIGNAL(activated(int)),this,SLOT(ShowFillRule()));
+
+    //设置铺展效果
+    spreadLabel = new QLabel("铺展效果");
+    spreadComboBox = new QComboBox;
+    spreadComboBox->addItem("平铺延伸",QGradient::PadSpread);
+    spreadComboBox->addItem("重复延伸",QGradient::RepeatSpread);
+    spreadComboBox->addItem("反射延伸",QGradient::ReflectSpread);
+    connect(spreadComboBox,SIGNAL(activated(int)),this,SLOT(ShowSpreadStyle()));
+
+    //设置画刷的颜色
+    brushColorLabel = new QLabel("设置画刷颜色");
+    brushColorFrame = new QFrame;
+    brushColorFrame->setFrameStyle(QFrame::Panel|QFrame::Sunken);
+    brushColorFrame->setAutoFillBackground(true);
+    brushColorFrame->setPalette(QPalette(Qt::green));
+    brushColorBtn = new QPushButton("更改");
+    connect(brushColorBtn,SIGNAL(clicked(bool)),this,SLOT(ShowBrushColor()));
+
+    //设置画刷风格
+    brushStyleLabel = new QLabel("画刷风格");
+    brushStyleComboBox = new QComboBox;
+    brushStyleComboBox->addItem("SolidPattern",static_cast<int>(Qt::SolidPattern));
+    brushStyleComboBox->addItem("Dense1Pattern",static_cast<int>(Qt::Dense1Pattern));
+    brushStyleComboBox->addItem("Dense2Pattern",static_cast<int>(Qt::Dense2Pattern));
+    brushStyleComboBox->addItem("Dense3Pattern",static_cast<int>(Qt::Dense3Pattern));
+    brushStyleComboBox->addItem("Dense4Pattern",static_cast<int>(Qt::Dense4Pattern));
+    brushStyleComboBox->addItem("Dense5Pattern",static_cast<int>(Qt::Dense5Pattern));
+    brushStyleComboBox->addItem("Dense6Pattern",static_cast<int>(Qt::Dense6Pattern));
+    brushStyleComboBox->addItem("Dense7Pattern",static_cast<int>(Qt::Dense7Pattern));
+    brushStyleComboBox->addItem("HorPattern",static_cast<int>(Qt::HorPattern));
+    brushStyleComboBox->addItem("VerPattern",static_cast<int>(Qt::VerPattern));
+    brushStyleComboBox->addItem("CrossPattern",static_cast<int>(Qt::CrossPattern));
+    brushStyleComboBox->addItem("BDiagPattern",static_cast<int>(Qt::BDiagPattern));
+    brushStyleComboBox->addItem("FDiagPattern",static_cast<int>(Qt::FDiagPattern));
+    brushStyleComboBox->addItem("LinearGradientPattern",static_cast<int>(Qt::LinearGradientPattern));
+    brushStyleComboBox->addItem("ConicalGradientPattern",static_cast<int>(Qt::ConicalGradientPattern));
+    brushStyleComboBox->addItem("RadialGradientPattern",static_cast<int>(Qt::RadialGradientPattern));
+    brushStyleComboBox->addItem("TexturePattern",static_cast<int>(Qt::TexturePattern));
+    connect(brushStyleComboBox,SIGNAL(activated(int)),this,SLOT(ShowBrush(int)));
+
     //右边控制区域
     rightLayout = new QGridLayout;
     rightLayout->addWidget(shapeLabel,0,0);
@@ -86,6 +126,13 @@ MainWidget::MainWidget(QWidget *parent)
     rightLayout->addWidget(penJoinComboBox,5,1);
     rightLayout->addWidget(fillRuleLabel,6,0);
     rightLayout->addWidget(fillRuleComboBox,6,1);
+    rightLayout->addWidget(spreadLabel,7,0);
+    rightLayout->addWidget(spreadComboBox,7,1);
+    rightLayout->addWidget(brushColorLabel,8,0);
+    rightLayout->addWidget(brushColorFrame,8,1);
+    rightLayout->addWidget(brushColorBtn,8,2);
+    rightLayout->addWidget(brushStyleLabel,9,0);
+    rightLayout->addWidget(brushStyleComboBox,9,1);
     QHBoxLayout* mainLayout = new QHBoxLayout(this);
     mainLayout->addWidget(paintArea);
     mainLayout->addLayout(rightLayout);
@@ -158,21 +205,63 @@ void MainWidget::ShowPenJoin(int joinValue)
 
 void MainWidget::ShowSpreadStyle()
 {
-
+    spread = QGradient::Spread(spreadComboBox->itemData(spreadComboBox->currentIndex()).toInt());
+    ShowBrush(brushStyleComboBox->currentIndex());
 }
 
 void MainWidget::ShowFillRule()
 {
     Qt::FillRule rule = Qt::FillRule(fillRuleComboBox->itemData(fillRuleComboBox->currentIndex(),Qt::UserRole).toInt());
     paintArea->SetFillRule(rule);
+    ShowBrush(brushStyleComboBox->currentIndex());
 }
 
 void MainWidget::ShowBrushColor()
 {
-
+    QColor color = QColorDialog::getColor(static_cast<int>(Qt::blue));
+    brushColorFrame->setPalette(QPalette(color));
+    ShowBrush(brushStyleComboBox->currentIndex());
 }
 
-void MainWidget::ShowBrush(int)
+void MainWidget::ShowBrush(int value)
 {
+    //获取画刷颜色
+    QColor color = brushColorFrame->palette().color(QPalette::Window);
+    Qt::BrushStyle style = Qt::BrushStyle(brushStyleComboBox->itemData(value,Qt::UserRole).toInt());
+    if(style == Qt::LinearGradientPattern)
+    {
+        QLinearGradient linearGradient(0,0,400,400);
+        linearGradient.setColorAt(0.0,Qt::white);
+        linearGradient.setColorAt(0.5,color);
+        linearGradient.setColorAt(1.0,Qt::black);
+        linearGradient.setSpread(spread);
+        paintArea->SetBrush(linearGradient);
+    }
+    else if(style == Qt::RadialGradientPattern)
+    {
+        QRadialGradient radialGradient(200,200,150,150,100);
+        radialGradient.setColorAt(0.0,Qt::white);
+        radialGradient.setColorAt(0.2,color);
+        radialGradient.setColorAt(1.0,Qt::black);
+        radialGradient.setSpread(spread);
+        paintArea->SetBrush(radialGradient);
+    }
+    else if(style == Qt::ConicalGradientPattern)
+    {
+        QConicalGradient conicalGradient(200,200,30);
+        conicalGradient.setColorAt(0.0,Qt::white);
+        conicalGradient.setColorAt(0.5,color);
+        conicalGradient.setColorAt(1.0,Qt::black);
+        paintArea->SetBrush(conicalGradient);
+    }
+    else if(style == Qt::TexturePattern)
+    {
+        paintArea->SetBrush(QBrush(QPixmap("image.png")));
+
+    }
+    else
+    {
+        paintArea->SetBrush(QBrush(color,style));
+    }
 
 }

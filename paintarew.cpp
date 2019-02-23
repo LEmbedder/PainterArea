@@ -33,6 +33,7 @@ void PaintArew::SetFillRule(Qt::FillRule f)
 
 void PaintArew::paintEvent(QPaintEvent *)
 {
+    qDebug("paintEvent");
     QPainter p(this);
     p.setPen(pen);
     p.setBrush(brush);
