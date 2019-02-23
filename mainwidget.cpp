@@ -228,9 +228,11 @@ void MainWidget::ShowBrush(int value)
     //获取画刷颜色
     QColor color = brushColorFrame->palette().color(QPalette::Window);
     Qt::BrushStyle style = Qt::BrushStyle(brushStyleComboBox->itemData(value,Qt::UserRole).toInt());
+    //获取延伸效果
+    spread = QGradient::Spread(spreadComboBox->itemData(spreadComboBox->currentIndex()).toInt());
     if(style == Qt::LinearGradientPattern)
     {
-        QLinearGradient linearGradient(0,0,400,400);
+        QLinearGradient linearGradient(0,0,200,200);
         linearGradient.setColorAt(0.0,Qt::white);
         linearGradient.setColorAt(0.5,color);
         linearGradient.setColorAt(1.0,Qt::black);
@@ -252,6 +254,7 @@ void MainWidget::ShowBrush(int value)
         conicalGradient.setColorAt(0.0,Qt::white);
         conicalGradient.setColorAt(0.5,color);
         conicalGradient.setColorAt(1.0,Qt::black);
+        conicalGradient.setSpread(spread);
         paintArea->SetBrush(conicalGradient);
     }
     else if(style == Qt::TexturePattern)
